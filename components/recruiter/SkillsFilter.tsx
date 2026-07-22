@@ -1,5 +1,7 @@
 "use client";
 
+import { Code2 } from "lucide-react";
+
 interface Props {
   skills: string[];
   selected: string;
@@ -12,31 +14,40 @@ export default function SkillsFilter({
   onChange,
 }: Props) {
   return (
-    <div className="mt-6 flex flex-wrap gap-3">
-      <button
-        onClick={() => onChange("")}
-        className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-          selected === ""
-            ? "border-blue-600 bg-blue-600 text-white"
-            : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
-        }`}
-      >
-        All Skills
-      </button>
+    <div>
+      <div className="mb-3 flex items-center gap-2">
+        <Code2 className="h-5 w-5 text-blue-600" />
+        <h3 className="text-sm font-semibold text-slate-700">
+          Filter by Skills
+        </h3>
+      </div>
 
-      {skills.map((skill) => (
+      <div className="flex flex-wrap gap-3">
         <button
-          key={skill}
-          onClick={() => onChange(skill)}
-          className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-            selected === skill
-              ? "border-blue-600 bg-blue-600 text-white"
-              : "border-gray-200 bg-white text-gray-700 hover:bg-gray-100"
+          onClick={() => onChange("")}
+          className={`rounded-2xl border px-5 py-2.5 text-sm font-semibold transition-all duration-200 ${
+            selected === ""
+              ? "border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-200"
+              : "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50"
           }`}
         >
-          {skill}
+          All Skills
         </button>
-      ))}
+
+        {skills.map((skill) => (
+          <button
+            key={skill}
+            onClick={() => onChange(skill)}
+            className={`rounded-2xl border px-5 py-2.5 text-sm font-semibold transition-all duration-200 ${
+              selected === skill
+                ? "border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-200"
+                : "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50"
+            }`}
+          >
+            {skill}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

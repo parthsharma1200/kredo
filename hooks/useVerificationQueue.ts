@@ -1,66 +1,53 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  approveDocument,
-  getPendingDocuments,
-  rejectDocument,
-} from "@/services/admin.services";
-import { Document } from "@/types/document";
+import { getVerificationQueue } from "@/services/admin.services";
+
+export interface VerificationItem {
+  id: string;
+  user_id: string;
+  title: string;
+  organization: string | null;
+  category: string | null;
+  description: string | null;
+  issue_date: string | null;
+  evidence_url: string | null;
+  verification_status: string;
+  trust_points: number;
+  created_at: string;
+  profiles?: {
+    full_name: string;
+    username?: string;
+    email?: string;
+    trust_score?: number;
+  };
+}
 
 export function useVerificationQueue() {
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const [queue, setQueue] = useState<VerificationItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  async function loadDocuments() {
+  async function refreshQueue() {
     try {
       setLoading(true);
 
-      const docs = await getPendingDocuments();
+      const data = await getVerificationQueue();
 
-      setDocuments(docs);
-    } catch (error) {
-      console.error("Verification Queue Error:", error);
+      setQueue(data as VerificationItem[]);
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoading(false);
     }
   }
 
-  async function approve(id: string, userId: string) {
-    try {
-      await approveDocument(id, userId);
-
-      alert("✅ Document verified successfully!");
-
-      await loadDocuments();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to verify document.");
-    }
-  }
-
-  async function reject(id: string, remarks: string) {
-    try {
-      await rejectDocument(id, remarks);
-
-      alert("❌ Document rejected.");
-
-      await loadDocuments();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to reject document.");
-    }
-  }
-
   useEffect(() => {
-    loadDocuments();
+    refreshQueue();
   }, []);
 
   return {
-    documents,
+    queue,
     loading,
-    approve,
-    reject,
-    reload: loadDocuments,
+    refreshQueue,
   };
 }

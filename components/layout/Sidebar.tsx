@@ -1,9 +1,9 @@
 "use client";
-
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthProvider";
-
+import { toast } from "sonner";
 import {
   LayoutDashboard,
   FileText,
@@ -18,46 +18,23 @@ import {
   LogOut,
 } from "lucide-react";
 
-const mainMenu = [
-  {
-    name: "Dashboard",
-    icon: LayoutDashboard,
-    active: true,
-  },
-  {
-    name: "Documents",
-    icon: FileText,
-  },
-  {
-    name: "Verification",
-    icon: BadgeCheck,
-  },
-  {
-    name: "References",
-    icon: Users,
-  },
-  {
-    name: "Trust Score",
-    icon: Star,
-  },
-  {
-    name: "Public Profile",
-    icon: Globe,
-  },
-];
+
 
 const accountMenu = [
   {
     name: "Notifications",
     icon: Bell,
+    href: "/dashboard/notifications",
   },
   {
     name: "Settings",
     icon: Settings,
+    href: "/dashboard/settings",
   },
   {
-    name: "Profile",
+    name: "My Profile",
     icon: User,
+    href: "/dashboard/profile",
   },
 ];
 
@@ -65,18 +42,42 @@ export default function Sidebar() {
   const router = useRouter();
   const supabase = createClient();
   const { profile } = useAuth();
+  const mainMenu = [
+  {
+    name: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/dashboard",
+  },
+  {
+    name: "Documents",
+    icon: FileText,
+    href: "/dashboard/documents",
+  },
+  {
+    name: "Verification",
+    icon: BadgeCheck,
+    href: "/dashboard/verification",
+  },
+  {
+    name: "Public Profile",
+    icon: Globe,
+    href: profile?.username
+      ? `/u/${profile.username}`
+      : "/dashboard",
+  },
+];
 
   async function handleLogout() {
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-      alert(error.message);
+      toast.error(error.message);
       return;
     }
 
     router.replace("/login");
   }
-
+const pathname = usePathname();
   const initials =
     profile?.full_name
       ?.split(" ")
@@ -109,13 +110,15 @@ export default function Sidebar() {
 
             return (
               <button
-                key={item.name}
-                className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition ${
-                  item.active
-                    ? "bg-blue-50 font-semibold text-blue-600"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`}
-              >
+  key={item.name}
+  onClick={() => router.push(item.href)}
+  className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition ${
+    pathname === item.href
+      ? "bg-blue-50 font-semibold text-blue-600"
+      : "text-gray-600 hover:bg-gray-100"
+  }`}
+>
+              
                 <Icon className="h-5 w-5" />
                 {item.name}
               </button>
@@ -132,18 +135,24 @@ export default function Sidebar() {
 
         <nav className="space-y-2">
           {accountMenu.map((item) => {
-            const Icon = item.icon;
+  const Icon = item.icon;
 
-            return (
-              <button
-                key={item.name}
-                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-gray-600 transition hover:bg-gray-100"
-              >
-                <Icon className="h-5 w-5" />
-                {item.name}
-              </button>
-            );
-          })}
+  return (
+    <button
+      key={item.name}
+      onClick={() => item.href && router.push(item.href)}
+      className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition ${
+        pathname === item.href
+          ? "bg-blue-50 font-semibold text-blue-600"
+          : "text-gray-600 hover:bg-gray-100"
+      }`}
+    >
+      <Icon className="h-5 w-5 flex-shrink-0" />
+
+      <span>{item.name}</span>
+    </button>
+  );
+})}
         </nav>
       </div>
 

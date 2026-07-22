@@ -1,17 +1,18 @@
-import DashboardLayout from "@/components/layout/DashboardLayout";
 import VerificationHeader from "@/components/dashboard/verification/VerificationHeader";
 import VerificationProgress from "@/components/dashboard/verification/VerificationProgress";
 import VerificationGrid from "@/components/dashboard/verification/VerificationGrid";
+import BackButton from "@/components/ui/BackButton";
+
 export default function VerificationPage() {
   return (
-    <DashboardLayout>
-      <div className="space-y-8">
-        <VerificationHeader />
+    <div className="space-y-8">
+      <BackButton fallback="/dashboard" />
 
-        <VerificationProgress />
+      <VerificationHeader />
 
-        <VerificationGrid />
-      </div>
-    </DashboardLayout>
+      <VerificationProgress />
+
+      <VerificationGrid />
+    </div>
   );
 }

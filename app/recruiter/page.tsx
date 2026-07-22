@@ -11,9 +11,10 @@ import TrustFilter from "@/components/recruiter/TrustFilter";
 import SkillsFilter from "@/components/recruiter/SkillsFilter";
 import SortDropdown from "@/components/recruiter/SortDropdown";
 import CandidateCard from "@/components/recruiter/CandidateCard";
-
+import CandidateCardSkeleton from "@/components/recruiter/CandidateCardSkeleton";
 import { useStudents } from "@/hooks/useStudents";
-
+import { SearchX } from "lucide-react";
+import EmptyState from "@/components/ui/EmptyState";
 function RecruiterDashboardContent() {
   const [search, setSearch] = useState("");
   const [minTrust, setMinTrust] = useState(0);
@@ -183,27 +184,30 @@ return (
 
         {/* Candidate Grid */}
         <section className="mt-8">
-
-          {loading ? (
-            <div className="rounded-3xl bg-white p-16 text-center shadow-sm">
-              <p className="text-lg text-gray-500">
-                Loading candidates...
-              </p>
-            </div>
+  {loading ? (
+            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+  {Array.from({ length: 6 }).map((_, index) => (
+    <CandidateCardSkeleton key={index} />
+  ))}
+</div>
           ) : filteredStudents.length === 0 ? (
-            <div className="rounded-3xl bg-white p-16 text-center shadow-sm">
+  <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-16 text-center shadow-sm">
 
-              <h3 className="text-2xl font-bold">
-                No candidates found
-              </h3>
+    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
+      <SearchX className="h-8 w-8 text-blue-600" />
+    </div>
 
-              <p className="mt-3 text-gray-500">
-                Try adjusting your search, trust score,
-                or selected skills.
-              </p>
+    <h3 className="mt-6 text-2xl font-bold text-slate-900">
+      No matching candidates
+    </h3>
 
-            </div>
-          ) : (
+    <p className="mx-auto mt-3 max-w-md text-slate-500">
+      Try lowering the minimum trust score or changing your search keywords.
+    </p>
+
+  </div>
+)
+           : (
             <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
               {filteredStudents.map((student) => (
                 <CandidateCard

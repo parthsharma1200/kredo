@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getAdminStats } from "@/services/admin.services";
 
-interface AdminStatsData {
+interface AdminStats {
   pending: number;
   verifiedToday: number;
   rejected: number;
@@ -11,7 +11,7 @@ interface AdminStatsData {
 }
 
 export function useAdminStats() {
-  const [stats, setStats] = useState<AdminStatsData>({
+  const [stats, setStats] = useState<AdminStats>({
     pending: 0,
     verifiedToday: 0,
     rejected: 0,
@@ -20,20 +20,23 @@ export function useAdminStats() {
 
   const [loading, setLoading] = useState(true);
 
-  const refreshStats = useCallback(async () => {
+  async function refreshStats() {
     try {
+      setLoading(true);
+
       const data = await getAdminStats();
+
       setStats(data);
     } catch (error) {
-      console.error(error);
+      console.error("Failed to load admin stats", error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }
 
   useEffect(() => {
     refreshStats();
-  }, [refreshStats]);
+  }, []);
 
   return {
     stats,

@@ -1,14 +1,17 @@
 import { notFound } from "next/navigation";
-import PublicProfileHero from "@/components/public/PublicProfileHero";
-import PublicStats from "@/components/public/PublicStats";
-import AchievementsSection from "@/components/public/AchievementsSection";
-import TrustTimeline from "@/components/public/TrustTimeline";
-import EducationCard from "@/components/public/sidebar/EducationCard";
-import SkillsCard from "@/components/public/sidebar/SkillsCard";
-import EvidenceGallery from "@/components/public/evidence/EvidenceGallery";
-import { getPublicAchievements } from "@/services/publicProfile.services";
-import { getProfileByUsername } from "@/services/publicProfile.services";
-import { error } from "console";
+
+import ProfileHero from "@/components/profile/ProfileHero";
+import VerifiedDocuments from "@/components/profile/VerifiedDocuments";
+import EducationCard from "@/components/profile/EducationCard";
+import SkillsCard from "@/components/profile/SkillsCard";
+import AboutCard from "@/components/profile/AboutCard";
+import ContactCard from "@/components/profile/ContactCard";
+import ShareProfileCard from "@/components/profile/ShareProfileCard";
+import BackButton from "@/components/ui/BackButton";
+import {
+  getPublicProfile,
+  getVerifiedDocuments,
+} from "@/services/profile.services";
 
 type Props = {
   params: Promise<{
@@ -21,77 +24,58 @@ export default async function PublicProfilePage({
 }: Props) {
   const { username } = await params;
 
-  let profile;
+  const profile = await getPublicProfile(username);
 
-try {
-  profile = await getProfileByUsername(username);
-} catch {
-  notFound();
-}
+  if (!profile) {
+    notFound();
+  }
 
-  
-
-  const achievements = await getPublicAchievements(profile.id);
-
-  const verifiedCount = achievements.filter(
-    (achievement) =>
-      achievement.verification_status === "Verified"
-  ).length;
-
-  const evidenceCount = achievements.filter(
-    (achievement) => achievement.evidence_url
-  ).length;
+  const documents = await getVerifiedDocuments(username);
 
   return (
-    <main className="min-h-screen bg-slate-100 py-12">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-10">
       <div className="mx-auto max-w-7xl px-6">
+ <BackButton fallback="/recruiter" />
 
         {/* Hero */}
-
-        <PublicProfileHero profile={profile} />
-
-        {/* Stats */}
-
-        <PublicStats
+        <ProfileHero
+          fullName={profile.full_name}
+          username={profile.username}
+          university={profile.university}
+          degree={profile.degree}
+          location={profile.location}
           trustScore={profile.trust_score}
-          achievements={achievements.length}
-          verified={verifiedCount}
-          evidence={evidenceCount}
         />
 
-        {/* Main Layout */}
+        {/* Content */}
+        <div className="mt-8 grid gap-8 lg:grid-cols-2">
 
-        <div className="mt-10 grid gap-8 lg:grid-cols-3">
+          <VerifiedDocuments
+            documents={documents}
+          />
 
-          {/* Sidebar */}
+          <EducationCard
+            university={profile.university}
+            degree={profile.degree}
+            graduationYear={profile.graduation_year}
+          />
 
-          <aside className="space-y-6">
+          <SkillsCard
+            skills={profile.skills}
+          />
 
-  <EducationCard
-    profile={profile}
-  />
+          <AboutCard
+            bio={profile.bio}
+          />
 
-  <SkillsCard
-    profile={profile}
-  />
+          <ContactCard
+            email={profile.email}
+            location={profile.location}
+          />
 
-</aside>
-          {/* Main Content */}
-
-          <section className="space-y-10 lg:col-span-2">
-
-            <AchievementsSection
-              achievements={achievements}
-            />
-
-            <TrustTimeline
-              achievements={achievements}
-            />
-            <EvidenceGallery
-  achievements={achievements}
-/>
-
-          </section>
+          <ShareProfileCard
+            username={profile.username}
+          />
 
         </div>
 

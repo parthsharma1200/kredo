@@ -7,6 +7,12 @@ import AddAchievementModal from "./AddAchievementModal";
 export default function AddAchievementButton() {
   const [open, setOpen] = useState(false);
 
+  const handleAddAchievement = (achievement: any) => {
+    // TODO: Save the achievement or update state here
+    console.log("New achievement:", achievement);
+    setOpen(false);
+  };
+
   return (
     <>
       <button
@@ -20,6 +26,7 @@ export default function AddAchievementButton() {
       <AddAchievementModal
         open={open}
         onClose={() => setOpen(false)}
+        onAddAchievement={handleAddAchievement}
       />
     </>
   );
