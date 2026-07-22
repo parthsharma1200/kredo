@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
+import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 
 import AuthCard from "@/components/auth/AuthCard";
@@ -26,9 +26,24 @@ async function handleSignup(e: React.FormEvent) {
   e.preventDefault();
 
   if (password !== confirmPassword) {
-    alert("Passwords do not match.");
+    toast.error("Passwords do not match.");
     return;
   }
+  if (
+  !fullName.trim() ||
+  !username.trim() ||
+  !university.trim() ||
+  !email.trim() ||
+  !password.trim()
+) {
+  toast.error("Please fill in all required fields.");
+  return;
+}
+
+if (password.length <10) {
+  toast.error("Password must be at least 10 characters.");
+  return;
+}
 
   setLoading(true);
 
@@ -39,7 +54,7 @@ async function handleSignup(e: React.FormEvent) {
   console.log({ data, error });
   setLoading(false);
   if (error) {
-  alert(error.message);
+  toast.error(error.message);
   return;
 }
 const { error: profileError } = await supabase
@@ -55,10 +70,10 @@ const { error: profileError } = await supabase
   trust_score: 0,
 })
   if (profileError) {
-  alert(profileError.message);
+  toast.error(profileError.message);
   return;
 }
-alert(
+toast.success(
   "Account created successfully! Please check your email to verify your account."
 );
 router.push("/login");
@@ -107,10 +122,8 @@ return (
   onChange={(e) => setPassword(e.target.value)}
 />
 
-          <AuthInput
+         <PasswordInput
   label="Confirm Password"
-  type="password"
-  placeholder="Confirm your password"
   value={confirmPassword}
   onChange={(e) => setConfirmPassword(e.target.value)}
 />
@@ -120,7 +133,34 @@ return (
   disabled={loading}
   className="w-full rounded-xl bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
 >
-            {loading ? "Creating..." : "Create Account"}
+            {loading ? (
+  <span className="flex items-center justify-center gap-2">
+    <svg
+      className="h-5 w-5 animate-spin"
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+        className="opacity-25"
+      />
+      <path
+        d="M22 12A10 0 0012 2"
+        stroke="currentColor"
+        strokeWidth="4"
+        className="opacity-90"
+      />
+    </svg>
+
+    Creating Account...
+  </span>
+) : (
+  "Create Account"
+)}
           </button>
 
         </form>

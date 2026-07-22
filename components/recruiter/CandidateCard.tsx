@@ -81,7 +81,15 @@ export default function CandidateCard({
             <p className="text-gray-500">
               @{profile.username}
             </p>
+<div className="mt-3 flex flex-wrap gap-2">
+  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+    ✓ Recruiter Ready
+  </span>
 
+  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+    Verified Identity
+  </span>
+</div>
           </div>
 
         </div>
@@ -128,31 +136,36 @@ export default function CandidateCard({
 
       </div>
 
-      {/* Trust */}
+ {/* Trust */}
 
-      <div className="mt-6 rounded-2xl bg-slate-50 p-4">
+<div className="mt-6 rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50 to-indigo-50 p-5">
+  <div className="flex items-center justify-between">
+    <div>
+      <p className="text-sm text-slate-500">
+        Trust Level
+      </p>
 
-        <div className="flex items-center justify-between">
+      <p className={`text-2xl font-black ${trust.color}`}>
+        {trust.label}
+      </p>
 
-          <div>
+      <p className="mt-1 text-sm text-slate-500">
+        Verified profile with trusted credentials
+      </p>
+    </div>
 
-            <p className="text-sm text-gray-500">
-              Trust Level
-            </p>
+    <Award className="h-10 w-10 text-yellow-500" />
+  </div>
 
-            <p
-              className={`text-lg font-bold ${trust.color}`}
-            >
-              {trust.label}
-            </p>
-
-          </div>
-
-          <Award className="h-8 w-8 text-yellow-500" />
-
-        </div>
-
-      </div>
+  <div className="mt-5 h-2 overflow-hidden rounded-full bg-blue-100">
+    <div
+      className="h-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-600"
+      style={{
+        width: `${Math.min(profile.trust_score, 100)}%`,
+      }}
+    />
+  </div>
+</div>
 
       {/* Skills */}
 
@@ -191,13 +204,13 @@ export default function CandidateCard({
     </div>
 
     <Link
-      href={`/u/${profile.username}`}
-      className="flex-1"
-    >
-      <Button className="w-full">
-        View Public Profile →
-      </Button>
-    </Link>
+  href={`/u/${profile.username}?from=recruiter`}
+  className="flex-1"
+>
+  <Button className="w-full">
+    View Trust Profile →
+  </Button>
+</Link>
 
   </div>
 )}

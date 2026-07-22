@@ -16,5 +16,5 @@ export interface Achievement {
 
   score: string;
 
-  icon?: LucideIcon;
+  icon: LucideIcon;
 }

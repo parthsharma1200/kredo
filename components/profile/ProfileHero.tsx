@@ -110,40 +110,79 @@ export default function ProfileHero({
 
         {/* Right */}
 
-        <div className="rounded-3xl bg-white p-8 text-center shadow-xl">
+<div className="rounded-3xl bg-white p-8 shadow-2xl">
+  <p className="text-center text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
+    Trust Score
+  </p>
 
-          <p className="text-sm font-semibold uppercase tracking-widest text-gray-500">
-            Trust Score
-          </p>
+  <div className="mt-5 text-center">
+    <h2 className="text-7xl font-black text-blue-700">
+      {trustScore}
+    </h2>
 
-          <h2 className="mt-4 text-7xl font-black text-blue-700">
-            {trustScore}
-          </h2>
+    <span className="mt-2 inline-flex rounded-full bg-green-100 px-4 py-1 text-sm font-semibold text-green-700">
+      Excellent Standing
+    </span>
+  </div>
 
-          <div className="mt-6 h-3 overflow-hidden rounded-full bg-gray-200">
+  <div className="mt-8">
+    <div className="mb-3 flex justify-between text-sm">
+      <span className="font-medium text-slate-600">
+        Profile Strength
+      </span>
 
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-600"
-              style={{
-                width: `${Math.min(trustScore, 100)}%`,
-              }}
-            />
+      <span className="font-bold text-blue-700">
+        {Math.min(trustScore, 100)}%
+      </span>
+    </div>
 
-          </div>
+    <div className="h-3 overflow-hidden rounded-full bg-slate-200">
+      <div
+        className="h-full rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600"
+        style={{
+          width: `${Math.min(trustScore, 100)}%`,
+        }}
+      />
+    </div>
+  </div>
 
-          <p className="mt-4 text-sm text-gray-500">
-            Verified Profile Strength
-          </p>
+  <div className="mt-8 space-y-4">
+    <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+      <span className="text-slate-500">
+        Identity
+      </span>
 
-          <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500">
+      <span className="font-semibold text-green-600">
+        Verified
+      </span>
+    </div>
 
-            <Calendar size={16} />
+    <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+      <span className="text-slate-500">
+        Documents
+      </span>
 
-            <span>Member Since 2026</span>
+      <span className="font-semibold text-green-600">
+        Verified
+      </span>
+    </div>
 
-          </div>
+    <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+      <span className="text-slate-500">
+        Recruiter Ready
+      </span>
 
-        </div>
+      <span className="font-semibold text-blue-700">
+        Yes
+      </span>
+    </div>
+  </div>
+
+  <div className="mt-8 flex items-center justify-center gap-2 border-t border-slate-200 pt-6 text-sm text-slate-500">
+    <Calendar size={16} />
+    <span>Member Since 2026</span>
+  </div>
+</div>
 
       </div>
 

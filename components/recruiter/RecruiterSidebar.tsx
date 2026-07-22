@@ -1,5 +1,5 @@
 "use client";
-
+import LogoutButton from "@/components/auth/LogoutButton";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -101,29 +101,27 @@ export default function RecruiterSidebar() {
 
       {/* Recruiter */}
 
-      <div className="border-t p-5">
+<div className="border-t p-5">
+  <div className="flex items-center gap-3">
+    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-lg font-bold text-white">
+      R
+    </div>
 
-        <div className="flex items-center gap-3">
+    <div>
+      <h3 className="font-semibold text-gray-900">
+        Recruiter
+      </h3>
 
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-lg font-bold text-white">
-            R
-          </div>
+      <p className="text-sm text-gray-500">
+        recruiter.kredo@gmail.com
+      </p>
+    </div>
+  </div>
 
-          <div>
-
-            <h3 className="font-semibold text-gray-900">
-              Recruiter
-            </h3>
-
-            <p className="text-sm text-gray-500">
-              recruiter.kredo@gmail.com
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
+  <div className="mt-5">
+    <LogoutButton />
+  </div>
+</div>
 
     </aside>
   );

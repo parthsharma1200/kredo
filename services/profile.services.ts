@@ -52,7 +52,14 @@ export async function getVerifiedDocuments(username: string) {
 
   const { data: documents, error } = await supabase
     .from("documents")
-    .select("id, title, document_type, verified_at")
+    .select(`
+  id,
+  title,
+  document_type,
+  verification_status,
+  verified_at,
+  file_url
+`)
     .eq("user_id", profile.id)
     .eq("verification_status", "verified")
     .order("verified_at", {

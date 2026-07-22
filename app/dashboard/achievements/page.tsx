@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import DashboardLayout from "@/components/layout/DashboardLayout";
 import AchievementHeader from "@/components/dashboard/achievements/AchievementHeader";
 import AchievementGrid from "@/components/dashboard/achievements/AchievementGrid";
 import AddAchievementModal from "@/components/dashboard/achievements/AddAchievementModal";
@@ -16,7 +15,9 @@ export default function AchievementPage() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-const supabase = createClient();
+
+  const supabase = createClient();
+
   useEffect(() => {
     loadAchievements();
   }, []);
@@ -26,7 +27,10 @@ const supabase = createClient();
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
     const { data, error } = await supabase
       .from("achievements")
@@ -40,8 +44,8 @@ const supabase = createClient();
       return;
     }
 
-    const mappedAchievements: Achievement[] =
-  (data ?? []).map((achievement) => ({
+    const mappedAchievements: Achievement[] = (data ?? []).map(
+      (achievement) => ({
         id: achievement.id,
         title: achievement.title,
         issuer: achievement.organization ?? "",
@@ -52,7 +56,8 @@ const supabase = createClient();
         status: achievement.verification_status,
         score: `+${achievement.trust_points}`,
         icon: GraduationCap,
-      }));
+      })
+    );
 
     setAchievements(mappedAchievements);
     setLoading(false);
@@ -64,33 +69,23 @@ const supabase = createClient();
 
   if (loading) {
     return (
-      <DashboardLayout>
-        <div className="flex h-[70vh] items-center justify-center">
-          Loading achievements...
-        </div>
-      </DashboardLayout>
+      <div className="flex h-[70vh] items-center justify-center text-lg font-medium text-slate-600">
+        Loading achievements...
+      </div>
     );
   }
 
   return (
-    <DashboardLayout>
-      <div className="space-y-8">
+    <div className="space-y-8">
+      <AchievementHeader onAddClick={() => setOpen(true)} />
 
-        <AchievementHeader
-          onAddClick={() => setOpen(true)}
-        />
+      <AchievementGrid achievements={achievements} />
 
-        <AchievementGrid
-          achievements={achievements}
-        />
-
-        <AddAchievementModal
-          open={open}
-          onClose={() => setOpen(false)}
-          onAddAchievement={handleAddAchievement}
-        />
-
-      </div>
-    </DashboardLayout>
+      <AddAchievementModal
+        open={open}
+        onClose={() => setOpen(false)}
+        onAddAchievement={handleAddAchievement}
+      />
+    </div>
   );
 }

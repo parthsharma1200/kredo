@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
+import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import Card from "@/components/ui/Card";
-
+import BackButton from "@/components/ui/BackButton";
 export default function EditProfilePage() {
   const router = useRouter();
   const supabase = createClient();
@@ -49,7 +49,7 @@ export default function EditProfilePage() {
       setDegree(data.degree ?? "");
       setLocation(data.location ?? "");
       setPhone(data.phone ?? "");
-      setGraduationYear(data.graduation_year ?? "");
+      setGraduationYear(data.graduation_year?.toString() ?? "");
       setBio(data.bio ?? "");
       setGithub(data.github ?? "");
       setLinkedin(data.linkedin ?? "");
@@ -78,7 +78,9 @@ export default function EditProfilePage() {
         degree,
         location,
         phone,
-        graduation_year: graduationYear,
+        graduation_year: graduationYear
+          ? Number(graduationYear)
+          : null,
         bio,
         github,
         linkedin,
@@ -88,11 +90,11 @@ export default function EditProfilePage() {
     setSaving(false);
 
     if (error) {
-      alert(error.message);
+      toast.error(error.message);
       return;
     }
 
-    alert("Profile updated successfully!");
+    toast.success("Profile updated successfully!");
 
     router.replace("/dashboard/profile");
   }
@@ -108,9 +110,12 @@ export default function EditProfilePage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-100 py-10">
-      <div className="mx-auto max-w-5xl px-6">
-        <Card className="rounded-3xl p-10 shadow-xl">
+  <main className="min-h-screen bg-slate-100 py-10">
+    <div className="mx-auto max-w-5xl px-6">
+
+      <BackButton fallback="/dashboard/profile" />
+
+      <Card className="rounded-3xl p-10 shadow-xl">
           <h1 className="mb-8 text-3xl font-bold text-gray-900">
             Edit Profile
           </h1>

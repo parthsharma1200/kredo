@@ -5,9 +5,6 @@ import DashboardSkeleton from "@/components/dashboard/DashboardSkeleton";
 import { useDashboard } from "@/hooks/useDashboard";
 import { useProfile } from "@/hooks/useProfile";
 
-import Header from "@/components/layout/Header";
-import Sidebar from "@/components/layout/Sidebar";
-
 import TrustScoreHero from "@/components/dashboard/TrustScoreHero";
 import StatCard from "@/components/dashboard/StatCard";
 import TrustChart from "@/components/dashboard/TrustChart";
@@ -30,107 +27,72 @@ function StudentDashboardContent() {
   } = useDashboard();
 
   if (loading || dashboardLoading) {
-  return <DashboardSkeleton />;
-}
+    return <DashboardSkeleton />;
+  }
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
+    <main className="flex-1 bg-slate-100 p-4 sm:p-6 lg:p-8">
+      {/* Hero */}
+      <section className="mb-8">
+        <h1 className="text-3xl font-black tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+          Build Trust. Unlock Opportunities.
+        </h1>
 
-      {/* Sidebar */}
+        <p className="mt-3 max-w-3xl text-base leading-7 text-gray-600 sm:text-lg sm:leading-8">
+          Every verified achievement strengthens your credibility,
+          builds recruiter confidence, and unlocks better career
+          opportunities.
+        </p>
+      </section>
 
-      <Sidebar />
+      {/* Trust Hero */}
+      <section className="mb-8">
+        <TrustScoreHero profile={profile!} />
+      </section>
 
-      {/* Main */}
-
-      <div className="flex flex-1 flex-col">
-
-        <Header
-          fullName={profile?.full_name ?? "Student"}
+      {/* Stats */}
+      <section className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <StatCard
+          title="Verified Achievements"
+          value={dashboard.verified}
+          helperText="Successfully Verified"
+          icon={Users}
+          iconBgColor="bg-emerald-100"
+          iconColor="text-emerald-600"
         />
 
-        <main className="flex-1 p-8">
+        <StatCard
+          title="Pending Verification"
+          value={dashboard.pending}
+          helperText="Awaiting Review"
+          icon={Eye}
+          iconBgColor="bg-amber-100"
+          iconColor="text-amber-600"
+        />
 
-          {/* Hero */}
+        <StatCard
+          title="Total Achievements"
+          value={dashboard.achievements}
+          helperText="Uploaded"
+          icon={FileText}
+          iconBgColor="bg-blue-100"
+          iconColor="text-blue-600"
+        />
+      </section>
 
-          <section className="mb-8">
+      {/* Dashboard Grid */}
+      <section className="grid grid-cols-1 gap-8 xl:grid-cols-12">
+        <div className="space-y-8 xl:col-span-8">
+          <TrustChart />
+          <RecentActivity />
+        </div>
 
-            <h1 className="text-4xl font-black tracking-tight text-gray-900 lg:text-5xl">
-              Build Trust. Unlock Opportunities.
-            </h1>
-
-            <p className="mt-3 max-w-3xl text-lg leading-8 text-gray-600">
-              Every verified achievement strengthens your
-              credibility, builds recruiter confidence,
-              and unlocks better career opportunities.
-            </p>
-
-          </section>
-
-          {/* Trust Hero */}
-
-          <section className="mb-8">
-            <TrustScoreHero profile={profile!} />
-          </section>
-
-          {/* Stats */}
-
-          <section className="grid gap-6 md:grid-cols-3">
-
-            <StatCard
-  title="Documents"
-  value={dashboard.achievements}
-  helperText="Uploaded"
-  icon={FileText}
-  iconBgColor="bg-green-100"
-  iconColor="text-green-600"
-/>
-
-<StatCard
-  title="Verified Documents"
-  value={dashboard.verified}
-  helperText="Approved"
-  icon={Users}
-  iconBgColor="bg-purple-100"
-  iconColor="text-purple-600"
-/>
-
-<StatCard
-  title="Pending Review"
-  value={dashboard.pending}
-  helperText="Waiting for verification"
-  icon={Eye}
-  iconBgColor="bg-orange-100"
-  iconColor="text-orange-600"
-/>
-          </section>
-
-          {/* Analytics */}
-
-          <section className="mt-8 grid gap-8 xl:grid-cols-3">
-
-            <div className="xl:col-span-2">
-              <TrustChart />
-            </div>
-
-            <ProfileCompletion />
-
-          </section>
-
-          {/* Bottom */}
-
-          <section className="mt-8 grid gap-8 xl:grid-cols-2">
-
-            <RecentActivity />
-
-            <AISuggestions />
-
-          </section>
-
-        </main>
-
-      </div>
-
-    </div>
+        <div className="space-y-8 xl:col-span-4">
+          <ProfileCompletion />
+          <AISuggestions />
+        </div>
+      </section>
+    </main>
   );
 }
 

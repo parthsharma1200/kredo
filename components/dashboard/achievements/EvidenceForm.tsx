@@ -1,5 +1,7 @@
 "use client";
 
+import { uploadEvidence } from "@/app/lib/uploadEvidence";
+import { toast } from "sonner";
 import { useState } from "react";
 import { GraduationCap, Upload } from "lucide-react";
 
@@ -33,7 +35,7 @@ export default function EvidenceForm({
     e.preventDefault();
 
     if (!title.trim() || !issuer.trim()) {
-      alert("Please fill in the Title and Issuer.");
+      toast.error("Please fill in the Title and Issuer.");
       return;
     }
 
@@ -44,7 +46,7 @@ export default function EvidenceForm({
     } = await supabase.auth.getUser();
 
     if (!user) {
-      alert("Please login again.");
+      toast.error("Please login again.");
       setSaving(false);
       return;
     }
@@ -55,7 +57,7 @@ export default function EvidenceForm({
       try {
         evidenceUrl = await uploadEvidence(file);
       } catch {
-        alert("Failed to upload evidence.");
+        toast.error("Failed to upload evidence.");
         setSaving(false);
         return;
       }
@@ -90,7 +92,7 @@ export default function EvidenceForm({
 
     if (error) {
       setSaving(false);
-      alert(error.message);
+      toast.error(error.message);
       return;
     }
 
@@ -114,7 +116,7 @@ export default function EvidenceForm({
 
     if (profileUpdateError) {
       setSaving(false);
-      alert(profileUpdateError.message);
+      toast.error(profileUpdateError.message);
       return;
     }
 
@@ -140,7 +142,7 @@ export default function EvidenceForm({
 
     setSaving(false);
 
-    alert("Achievement added successfully!");
+    toast.success("Achievement added successfully!");
 
     onClose();
   }

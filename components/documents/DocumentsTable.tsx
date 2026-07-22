@@ -1,8 +1,9 @@
 "use client";
 
-import { Eye, Trash2 } from "lucide-react";
-import DocumentStatusBadge from "./DocumentStatusBadge";
+import { FolderOpen } from "lucide-react";
+
 import { Document } from "@/types/document";
+import DocumentCard from "./DocumentCard";
 
 interface Props {
   documents: Document[];
@@ -15,83 +16,52 @@ export default function DocumentsTable({
   onView,
   onDelete,
 }: Props) {
+  const verifiedCount = documents.filter(
+    (doc) => doc.verification_status === "verified"
+  ).length;
+
   if (documents.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-gray-300 bg-white py-20 text-center">
-        <h2 className="text-xl font-semibold text-gray-800">
-          No Documents Uploaded
+      <div className="rounded-3xl border border-dashed border-slate-300 bg-white py-24 text-center shadow-sm">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-50">
+          <FolderOpen className="h-10 w-10 text-blue-600" />
+        </div>
+
+        <h2 className="mt-6 text-3xl font-bold text-slate-900">
+          No Documents Yet
         </h2>
 
-        <p className="mt-2 text-gray-500">
-          Upload your first document to begin verification.
+        <p className="mt-3 text-slate-500">
+          Upload your first document to start building your verified profile.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border bg-white shadow-sm">
-      <table className="w-full">
-        <thead className="bg-gray-50">
-          <tr className="text-left text-sm text-gray-600">
-            <th className="px-6 py-4">Document</th>
-            <th className="px-6 py-4">Type</th>
-            <th className="px-6 py-4">Status</th>
-            <th className="px-6 py-4">Uploaded</th>
-            <th className="px-6 py-4 text-center">Actions</th>
-          </tr>
-        </thead>
+    <div className="space-y-6">
+      <div className="rounded-3xl border border-slate-200 bg-white px-8 py-6 shadow-sm">
+        <h2 className="text-2xl font-bold text-slate-900">
+          Uploaded Documents
+        </h2>
 
-        <tbody>
-          {documents.map((doc) => (
-            <tr
-              key={doc.id}
-              className="border-t hover:bg-gray-50 transition"
-            >
-              <td className="px-6 py-4 font-medium">
-                {doc.title}
-              </td>
+        <p className="mt-2 text-sm text-slate-500">
+          {documents.length} document
+          {documents.length > 1 ? "s" : ""} uploaded •{" "}
+          {verifiedCount} verified
+        </p>
+      </div>
 
-              <td className="px-6 py-4 capitalize">
-                {doc.document_type}
-              </td>
-
-              <td className="px-6 py-4">
-                <DocumentStatusBadge
-                  status={doc.verification_status}
-                />
-              </td>
-
-              <td className="px-6 py-4">
-                {new Date(doc.uploaded_at).toLocaleDateString()}
-              </td>
-
-              <td className="px-6 py-4">
-                <div className="flex justify-center gap-3">
-                  <button
-                    onClick={() => onView(doc)}
-                    className="rounded-lg p-2 hover:bg-blue-100"
-                    title="View Document"
-                  >
-                    <Eye size={18} />
-                  </button>
-
-                  <button
-                    onClick={() => onDelete(doc)}
-                    className="rounded-lg p-2 hover:bg-red-100"
-                    title="Delete Document"
-                  >
-                    <Trash2
-                      size={18}
-                      className="text-red-600"
-                    />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {documents.map((doc) => (
+          <DocumentCard
+            key={doc.id}
+            document={doc}
+            onView={onView}
+            onDelete={onDelete}
+          />
+        ))}
+      </div>
     </div>
   );
 }
