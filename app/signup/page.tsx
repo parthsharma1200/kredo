@@ -40,8 +40,8 @@ async function handleSignup(e: React.FormEvent) {
   return;
 }
 
-if (password.length <10) {
-  toast.error("Password must be at least 10 characters.");
+if (password.length <7) {
+  toast.error("Password must be at least 7 characters.");
   return;
 }
 
