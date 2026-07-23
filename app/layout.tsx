@@ -21,11 +21,7 @@ export const metadata = {
   description:
     "Build a verified student profile recruiters can trust.",
 };
-<Toaster
-  position="top-right"
-  richColors
-  closeButton
-/>
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -39,6 +35,11 @@ export default function RootLayout({
       <body className="min-h-full bg-slate-100">
   <AuthProvider>
     {children}
+    <Toaster
+  position="top-right"
+  richColors
+  closeButton
+/>
   </AuthProvider>
 </body>
     </html>
