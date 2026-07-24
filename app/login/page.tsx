@@ -68,7 +68,7 @@ toast.success("Welcome back!");
           onSubmit={handleLogin}
           className="space-y-5"
         >
-          autoFocus
+         
           <AuthInput
             label="Email"
             type="email"
@@ -102,7 +102,7 @@ toast.success("Welcome back!");
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-xl bg-blue-600 py-3 font-semibold text-white shadow-md transition-all duration-300 hover:bg-blue-700 hover:shadow-[0_0_25px_rgba(37,99,235,0.35)] hover:tracking-wide active:scale-[0.99] active:shadow-sm disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? (
   <span className="flex items-center justify-center gap-2">

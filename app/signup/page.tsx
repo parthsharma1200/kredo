@@ -22,8 +22,11 @@ const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
 const [confirmPassword, setConfirmPassword] = useState("");
 const [loading, setLoading] = useState(false);
+
 async function handleSignup(e: React.FormEvent) {
   e.preventDefault();
+
+  console.log("Signup button clicked");
 
   if (password !== confirmPassword) {
     toast.error("Passwords do not match.");
@@ -46,6 +49,8 @@ if (password.length <7) {
 }
 
   setLoading(true);
+  console.log("Calling Supabase signup...");
+  
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -80,6 +85,7 @@ router.push("/login");
 }
 
 return (
+  
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 px-6">
       <AuthCard
         title="Create Your Account 🚀"
@@ -131,7 +137,7 @@ return (
           <button
   type="submit"
   disabled={loading}
-  className="w-full rounded-xl bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+className="w-full rounded-xl bg-blue-600 py-3 font-semibold text-white shadow-md transition-all duration-300 hover:bg-blue-700 hover:shadow-[0_0_25px_rgba(37,99,235,0.35)] hover:tracking-wide active:scale-[0.99] active:shadow-sm disabled:cursor-not-allowed disabled:opacity-60"
 >
             {loading ? (
   <span className="flex items-center justify-center gap-2">

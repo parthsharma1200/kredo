@@ -1,23 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
+
 import BackButton from "@/components/ui/BackButton";
 import DocumentsHeader from "@/components/documents/DocumentsHeader";
 import DocumentsTable from "@/components/documents/DocumentsTable";
+import DocumentsTableSkeleton from "@/components/documents/DocumentTableSkeleton";
 import UploadModal from "@/components/documents/UploadModal";
-import { toast } from "sonner";
+
 import { useDocuments } from "@/hooks/useDocuments";
 import { getDocumentUrl } from "@/services/documents.service";
 import { Document } from "@/types/document";
-import DocumentsTableSkeleton from "@/components/documents/DocumentTableSkeleton";
 
 export default function DocumentsPage() {
-  const {
-    documents,
-    loading,
-    upload,
-    remove,
-  } = useDocuments();
+  const { documents, loading, upload, remove } = useDocuments();
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -54,30 +51,13 @@ export default function DocumentsPage() {
     try {
       await upload(title, type, file);
       setModalOpen(false);
+      toast.success("Document uploaded successfully.");
     } catch (error) {
       console.error(error);
-      toast.error("Upload failed");
+      toast.error("Upload failed.");
     }
   }
 
-  if (loading) {
-  return (
-  <div className="space-y-8">
-    <BackButton fallback="/dashboard" />
-
-    <DocumentsHeader
-      onUpload={() => setModalOpen(true)}
-    />
-      <DocumentsHeader
-        onUpload={() => setModalOpen(true)}
-      />
-
-      <DocumentsTableSkeleton />
-    </div>
-  );
-}
-
-  if (loading) {
   return (
     <div className="space-y-8">
       <BackButton fallback="/dashboard" />
@@ -85,15 +65,16 @@ export default function DocumentsPage() {
       <DocumentsHeader
         onUpload={() => setModalOpen(true)}
       />
-      <DocumentsHeader
-        onUpload={() => setModalOpen(true)}
-      />
 
-      <DocumentsTable
-        documents={documents}
-        onView={handleView}
-        onDelete={handleDelete}
-      />
+      {loading ? (
+        <DocumentsTableSkeleton />
+      ) : (
+        <DocumentsTable
+          documents={documents}
+          onView={handleView}
+          onDelete={handleDelete}
+        />
+      )}
 
       <UploadModal
         open={modalOpen}
@@ -101,5 +82,5 @@ export default function DocumentsPage() {
         onUpload={handleUpload}
       />
     </div>
-  )};
+  );
 }
