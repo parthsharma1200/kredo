@@ -59,8 +59,10 @@ export default function DocumentsPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <BackButton fallback="/dashboard" />
+  <div className="rounded-xl bg-green-500 p-10 text-4xl text-white">
+    Documents Page Works ✅
+  
+
 
       <DocumentsHeader
         onUpload={() => setModalOpen(true)}
