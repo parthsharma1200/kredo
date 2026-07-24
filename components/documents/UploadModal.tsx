@@ -1,5 +1,5 @@
 "use client";
-
+import { toast } from "sonner";
 import { useState } from "react";
 import {
   Upload,
@@ -32,7 +32,7 @@ export default function UploadModal({
 
   async function handleSubmit() {
     if (!title || !type || !file) {
-      alert("Please complete all fields.");
+      toast.error("Please complete all fields.");
       return;
     }
 
@@ -48,7 +48,7 @@ export default function UploadModal({
       onClose();
     } catch (error) {
       console.error(error);
-      alert("Upload failed.");
+      toast.error("Upload failed.");
     } finally {
       setUploading(false);
     }
@@ -56,7 +56,7 @@ export default function UploadModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-6 backdrop-blur-sm">
-      <div className="w-full max-w-xl overflow-hidden rounded-3xl bg-white shadow-2xl">
+      <div className="flex max-h-[90vh] w-full max-w-xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
         {/* Header */}
 
         <div className="flex items-center justify-between bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-6 text-white">
@@ -80,7 +80,7 @@ export default function UploadModal({
 
         {/* Body */}
 
-        <div className="space-y-6 p-8">
+        <div className="flex-1 space-y-6 overflow-y-auto p-8">
           <div>
             <label className="mb-2 block font-semibold text-slate-700">
               Document Title

@@ -2,17 +2,26 @@
 
 import { useState } from "react";
 import UploadModal from "@/components/documents/UploadModal";
-
+import { useDocuments } from "@/hooks/useDocuments";
+import DocumentCard from "@/components/documents/DocumentCard";
 export default function DocumentsPage() {
   const [open, setOpen] = useState(false);
 
-  async function handleUpload(
-    title: string,
-    type: string,
-    file: File
-  ) {
-    console.log({ title, type, file });
-  }
+const {
+  documents,
+  loading,
+  upload,
+  remove,
+} = useDocuments();
+
+async function handleUpload(
+  title: string,
+  type: string,
+  file: File
+) {
+  await upload(title, type, file);
+  setOpen(false);
+}
 
   return (
     <div className="space-y-8">
@@ -76,16 +85,35 @@ export default function DocumentsPage() {
 
       {/* Documents */}
       <div className="rounded-3xl bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-bold text-slate-900">
-          Uploaded Documents
-        </h2>
+  <h2 className="text-2xl font-bold text-slate-900">
+    Uploaded Documents
+  </h2>
 
-        <div className="mt-8 rounded-2xl border border-dashed border-slate-300 p-12 text-center">
-          <p className="text-slate-500">
-            No documents uploaded yet.
-          </p>
-        </div>
-      </div>
+  {loading ? (
+    <div className="py-10 text-center">
+      Loading...
+    </div>
+  ) : documents.length === 0 ? (
+    <div className="mt-8 rounded-2xl border border-dashed border-slate-300 p-12 text-center">
+      <p className="text-slate-500">
+        No documents uploaded yet.
+      </p>
+    </div>
+  ) : (
+    <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {documents.map((doc) => (
+        <DocumentCard
+          key={doc.id}
+          document={doc}
+          onView={(doc) => {
+            console.log(doc);
+          }}
+          onDelete={remove}
+        />
+      ))}
+    </div>
+  )}
+</div>
 
       <UploadModal
         open={open}
