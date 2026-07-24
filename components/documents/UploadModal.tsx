@@ -90,7 +90,7 @@ export default function UploadModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Semester 5 Marksheet"
-              className="w-full rounded-2xl border border-slate-200 p-4 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+              className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             />
           </div>
 
@@ -102,7 +102,7 @@ export default function UploadModal({
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 p-4 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+             className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             >
               <option value="">Select Type</option>
               <option value="Marksheet">🎓 Marksheet</option>
