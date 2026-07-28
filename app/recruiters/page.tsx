@@ -8,7 +8,7 @@ import CandidateShowcase from "@/components/recruiters/landing/CandidateShowcase
 import Testimonials from "@/components/recruiters/landing/Testimonials";
 import CTA from "@/components/recruiters/landing/CTA";
 import Footer from "@/components/recruiters/landing/Footer";
-
+{/* deployment test */}
 export default function RecruiterHomePage() {
   return (
     <>
