@@ -1,5 +1,5 @@
 import Link from "next/link";
-import FavoriteButton from "@/components/recruiter/FavoriteButton";
+import FavoriteButton from "@/components/recruiters/FavoriteButton";
 import {
   GraduationCap,
   MapPin,

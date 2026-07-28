@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+
 import { createClient } from "@/lib/supabase/client";
 
 import AuthCard from "@/components/auth/AuthCard";
@@ -12,49 +13,30 @@ import PasswordInput from "@/components/auth/PasswordInput";
 import AuthDivider from "@/components/auth/AuthDivider";
 import SocialLogin from "@/components/auth/SocialLogin";
 
-export default function SignupPage() {
+export default function RecruiterLoginPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  const [fullName, setFullName] = useState("");
-  const [username, setUsername] = useState("");
-  const [university, setUniversity] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSignup(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match.");
-      return;
-    }
-
-    if (
-      !fullName.trim() ||
-      !username.trim() ||
-      !university.trim() ||
-      !email.trim() ||
-      !password.trim()
-    ) {
-      toast.error("Please fill in all required fields.");
-      return;
-    }
-
-    if (password.length < 7) {
-      toast.error("Password must be at least 7 characters.");
+    if (!email.trim() || !password.trim()) {
+      toast.error("Please enter your email and password.");
       return;
     }
 
     try {
       setLoading(true);
 
-      const { data, error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
       });
+      console.log("Login Result:", { data, error });
 
       if (error) {
         toast.error(error.message);
@@ -62,36 +44,35 @@ export default function SignupPage() {
       }
 
       if (!data.user) {
-        toast.error("Failed to create account.");
+        toast.error("Login failed.");
         return;
       }
 
-      const { error: profileError } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from("profiles")
-        .insert({
-          id: data.user.id,
-          full_name: fullName.trim(),
-          username: username.trim().toLowerCase(),
-          email: email.trim().toLowerCase(),
-          university: university.trim(),
-          role: "student",
-          open_to_work: true,
-        });
+        .select("role")
+        .eq("id", data.user.id)
+        .single();
 
       if (profileError) {
-        toast.error(profileError.message);
+        await supabase.auth.signOut();
+        toast.error("Unable to verify your account.");
+        return;
+      }
+console.log("Profile:", profile);
+      if (profile.role !== "recruiter") {
+        await supabase.auth.signOut();
+        toast.error("This account is not registered as a recruiter.");
         return;
       }
 
-      toast.success(
-        "Account created successfully! Please check your email to verify your account."
-      );
+      toast.success("Welcome back!");
 
-      router.push("/login");
+      router.push("/recruiters/dashboard");
       router.refresh();
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -100,40 +81,14 @@ export default function SignupPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 px-6">
       <AuthCard
-        title="Create Your Account 🚀"
-        subtitle="Start building your verified student profile."
+        title="Recruiter Login"
+        subtitle="Sign in to access your recruiter dashboard."
       >
-        <form
-          onSubmit={handleSignup}
-          className="space-y-5"
-        >
+        <form onSubmit={handleLogin} className="space-y-5">
           <AuthInput
-            label="Full Name"
-            placeholder="Enter your full name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-          />
-
-          <AuthInput
-            label="Username"
-            placeholder="Choose a unique username"
-            value={username}
-            onChange={(e) =>
-              setUsername(e.target.value.toLowerCase())
-            }
-          />
-
-          <AuthInput
-            label="College / University"
-            placeholder="Enter your college"
-            value={university}
-            onChange={(e) => setUniversity(e.target.value)}
-          />
-
-          <AuthInput
-            label="Email"
+            label="Work Email"
             type="email"
-            placeholder="Enter your email"
+            placeholder="Enter your work email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -141,14 +96,6 @@ export default function SignupPage() {
           <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <PasswordInput
-            label="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) =>
-              setConfirmPassword(e.target.value)
-            }
           />
 
           <button
@@ -171,19 +118,18 @@ export default function SignupPage() {
                     strokeWidth="4"
                     className="opacity-25"
                   />
-
                   <path
-                    d="M22 12A10 0 002 12"
+                    d="M22 12A10 10 0 0012 2"
                     stroke="currentColor"
                     strokeWidth="4"
                     className="opacity-90"
                   />
                 </svg>
 
-                Creating Account...
+                Signing In...
               </span>
             ) : (
-              "Create Account"
+              "Login"
             )}
           </button>
         </form>
@@ -193,12 +139,22 @@ export default function SignupPage() {
         <SocialLogin />
 
         <p className="mt-8 text-center text-sm text-gray-600">
-          Already have an account?{" "}
+          Don't have a recruiter account?{" "}
+          <Link
+            href="/recruiters/signup"
+            className="font-semibold text-blue-600 hover:text-blue-700"
+          >
+            Sign Up
+          </Link>
+        </p>
+
+        <p className="mt-3 text-center text-sm text-gray-500">
+          Looking for a student login?{" "}
           <Link
             href="/login"
             className="font-semibold text-blue-600 hover:text-blue-700"
           >
-            Login
+            Student Login
           </Link>
         </p>
       </AuthCard>

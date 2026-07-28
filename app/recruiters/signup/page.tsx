@@ -1,24 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+
 import { createClient } from "@/lib/supabase/client";
 
 import AuthCard from "@/components/auth/AuthCard";
+import AuthDivider from "@/components/auth/AuthDivider";
 import AuthInput from "@/components/auth/AuthInput";
 import PasswordInput from "@/components/auth/PasswordInput";
-import AuthDivider from "@/components/auth/AuthDivider";
 import SocialLogin from "@/components/auth/SocialLogin";
 
-export default function SignupPage() {
+export default function RecruiterSignupPage() {
   const router = useRouter();
   const supabase = createClient();
 
   const [fullName, setFullName] = useState("");
-  const [username, setUsername] = useState("");
-  const [university, setUniversity] = useState("");
+  const [company, setCompany] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,8 +34,7 @@ export default function SignupPage() {
 
     if (
       !fullName.trim() ||
-      !username.trim() ||
-      !university.trim() ||
+      !company.trim() ||
       !email.trim() ||
       !password.trim()
     ) {
@@ -71,11 +70,11 @@ export default function SignupPage() {
         .insert({
           id: data.user.id,
           full_name: fullName.trim(),
-          username: username.trim().toLowerCase(),
           email: email.trim().toLowerCase(),
-          university: university.trim(),
-          role: "student",
-          open_to_work: true,
+          username: email.trim().split("@")[0],
+          university: company.trim(),
+          role: "recruiter",
+          open_to_work: false,
         });
 
       if (profileError) {
@@ -84,10 +83,10 @@ export default function SignupPage() {
       }
 
       toast.success(
-        "Account created successfully! Please check your email to verify your account."
+        "Recruiter account created successfully! Please verify your email before logging in."
       );
 
-      router.push("/login");
+      router.push("/recruiters/login");
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -100,13 +99,10 @@ export default function SignupPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50 px-6">
       <AuthCard
-        title="Create Your Account 🚀"
-        subtitle="Start building your verified student profile."
+        title="Recruiter Sign Up 🏢"
+        subtitle="Create your recruiter account and start discovering trusted student talent."
       >
-        <form
-          onSubmit={handleSignup}
-          className="space-y-5"
-        >
+        <form onSubmit={handleSignup} className="space-y-5">
           <AuthInput
             label="Full Name"
             placeholder="Enter your full name"
@@ -115,25 +111,16 @@ export default function SignupPage() {
           />
 
           <AuthInput
-            label="Username"
-            placeholder="Choose a unique username"
-            value={username}
-            onChange={(e) =>
-              setUsername(e.target.value.toLowerCase())
-            }
+            label="Company Name"
+            placeholder="Enter your company name"
+            value={company}
+            onChange={(e) => setCompany(e.target.value)}
           />
 
           <AuthInput
-            label="College / University"
-            placeholder="Enter your college"
-            value={university}
-            onChange={(e) => setUniversity(e.target.value)}
-          />
-
-          <AuthInput
-            label="Email"
+            label="Work Email"
             type="email"
-            placeholder="Enter your email"
+            placeholder="Enter your work email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -146,9 +133,7 @@ export default function SignupPage() {
           <PasswordInput
             label="Confirm Password"
             value={confirmPassword}
-            onChange={(e) =>
-              setConfirmPassword(e.target.value)
-            }
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
           <button
@@ -171,9 +156,8 @@ export default function SignupPage() {
                     strokeWidth="4"
                     className="opacity-25"
                   />
-
                   <path
-                    d="M22 12A10 0 002 12"
+                    d="M22 12A10 10 0 0012 2"
                     stroke="currentColor"
                     strokeWidth="4"
                     className="opacity-90"
@@ -183,7 +167,7 @@ export default function SignupPage() {
                 Creating Account...
               </span>
             ) : (
-              "Create Account"
+              "Create Recruiter Account"
             )}
           </button>
         </form>
@@ -193,12 +177,22 @@ export default function SignupPage() {
         <SocialLogin />
 
         <p className="mt-8 text-center text-sm text-gray-600">
-          Already have an account?{" "}
+          Already have a recruiter account?{" "}
           <Link
-            href="/login"
+            href="/recruiters/login"
             className="font-semibold text-blue-600 hover:text-blue-700"
           >
             Login
+          </Link>
+        </p>
+
+        <p className="mt-3 text-center text-sm text-gray-500">
+          Looking for a student account?{" "}
+          <Link
+            href="/signup"
+            className="font-semibold text-blue-600 hover:text-blue-700"
+          >
+            Student Sign Up
           </Link>
         </p>
       </AuthCard>

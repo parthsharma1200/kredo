@@ -14,14 +14,48 @@ export async function signIn(
 
 export async function signUp(
   email: string,
-  password: string
+  password: string,
+  fullName: string,
+  role: "student" | "recruiter"
 ) {
   const supabase = createClient();
 
-  return await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
   });
+
+  if (error) {
+    return { data, error };
+  }
+
+  if (data.user) {
+    const username = email.split("@")[0];
+
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .insert({
+        id: data.user.id,
+        email,
+        full_name: fullName,
+        username,
+        role,
+        trust_score: 0,
+        open_to_work: role === "student",
+      });
+
+    if (profileError) {
+      return {
+        data,
+        error: profileError,
+      };
+    }
+  }
+
+  return {
+    data,
+    error: null,
+  };
 }
 
 export async function signOut() {

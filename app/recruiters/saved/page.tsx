@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 
 import Link from "next/link";
 import Button from "@/components/ui/Button";
-import RemoveSavedButton from "@/components/recruiter/RemoveSavedButton";
-import CandidateCard from "@/components/recruiter/CandidateCard";
+import RemoveSavedButton from "@/components/recruiters/RemoveSavedButton";
+import CandidateCard from "@/components/recruiters/CandidateCard";
 import { getSavedCandidates } from "@/services/recruiter.services";
 
 export default function SavedCandidatesPage() {
